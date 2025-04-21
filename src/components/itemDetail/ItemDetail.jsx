@@ -17,12 +17,12 @@ const ItemDetail = ({ product }) => {
             <div className="product-content">
                 <div className="product-images">
                     <div className="thumbnails">
-                        <img src={`../src/assets/${product.img}`} alt={`${product.name}`}/>
-                        <img src={`../src/assets/${product.img}`} alt={`${product.name}`}/>
-                        <img src={`../src/assets/${product.img}`} alt={`${product.name}`}/>
+                        <img src={`${product.image}`} alt={`${product.name}`}/>
+                        <img src={`${product.image}`} alt={`${product.name}`}/>
+                        <img src={`${product.image}`} alt={`${product.name}`}/>
                     </div>
                     <div className="main-image">
-                        <img src={`../src/assets/${product.img}`} alt={`${product.name}`}/>
+                        <img src={`${product.image}`} alt={`${product.name}`}/>
                     </div>
                 </div>
         

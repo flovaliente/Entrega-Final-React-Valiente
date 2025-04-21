@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { ShopContext } from '../../context/ShopContext.jsx';
 import { db } from '../../firebase/client.js';
@@ -7,17 +8,36 @@ import './cart.css';
 
 const Cart = () =>{
     const [ buyer, setBuyer ] = useState({ name: '', phone: '', email: '' });
-    const { lista } = useContext(ShopContext);
+    const { lista, totalPrice, cleanCart } = useContext(ShopContext);
+    const navigate = useNavigate();
 
     const createOrder = () =>{
         const order = {
             buyer,
-            items: [{id: 1, title: "Producto 1", quantity: 2, total: 1000}],
-            total: 1000 
+            items: lista,
+            total: totalPrice(lista) 
         };
         console.log(order);
+
+        const orderCollection = collection(db, 'orders');
+        addDoc(orderCollection, order).then(({ id }) => {
+            console.log(id);
+
+            // Limpio los input
+            setBuyer({ name: '', phone: '', email: '' });
+
+            // Limpio carrito
+            cleanCart();
+
+            // Redirige a la pagina donde muestra la orden
+            navigate(`/order/${id}`)
+        }).catch((e) => console.error("Error al crear la orden: ", e));
     }
-    console.log("La lista: ", lista);
+
+    useEffect(() =>{
+        console.log("La lista: ", lista);
+    }, [lista])
+    
 
     return (
         <>
@@ -33,7 +53,7 @@ const Cart = () =>{
                         {lista.map((product) =>(
                             <li key={product.id} className="cart-item">
                                 <div className="cart-item-info">
-                                    <img src={`../public/img/${product.img}`} alt={`${product.name}`} className="cart-item-img" />
+                                    <img src={`${product.image}`} alt={`${product.name}`} className="cart-item-img" />
                                     <div className="cart-item-description">
                                         <h3>{product.name}</h3>
                                         <p className="product-code">Art: {product.code}</p>
@@ -54,9 +74,9 @@ const Cart = () =>{
                 </div>
             </div>
             <div>Cart</div>
-            <input type="text" placeholder='Nombre' onChange={(e) => setBuyer({ ...buyer, name: e.target.value})} />
-            <input type="number" placeholder='Telefono' onChange={(e) => setBuyer({ ...buyer, phone: e.target.value})} />
-            <input type="text" placeholder='Email' onChange={(e) => setBuyer({ ...buyer, email: e.target.value})} />
+            <input type="text" placeholder='Nombre' value={buyer.name} onChange={(e) => setBuyer({ ...buyer, name: e.target.value})} />
+            <input type="number" placeholder='Telefono' value={buyer.phone} onChange={(e) => setBuyer({ ...buyer, phone: e.target.value})} />
+            <input type="text" placeholder='Email' value={buyer.email} onChange={(e) => setBuyer({ ...buyer, email: e.target.value})} />
             <button onClick={createOrder}>Finalizar Compra</button>
         </>
     )

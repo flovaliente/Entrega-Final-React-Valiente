@@ -4,9 +4,10 @@
     justify-content: center; /* Centra el contenido horizontalmente */
     align-items: center; /* Centra el contenido verticalmente si es necesario */
     margin: 20px;
+    margin-top: 50px;
   }
   .cart-container .cart-details {
-    width: 60%;
+    width: 100%;
     background-color: #f9f9f9;
     border-radius: 5px;
   }
